@@ -10,8 +10,30 @@ docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_AGENT_ENABLED=true' \
 #Log into container to get your SQL Server command prompt
 docker exec -it sqlserver_2 bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P Password!'
 
+#update cdc tables after change
+USE testDB
+GO
+EXEC sys.sp_cdc_enable_table @capture_instance = N'dbo_customers2', @source_schema = N'dbo', @source_name = N'customers', @role_name = N'MyRole', @supports_net_changes = 1
+GO;
+
+#disable cdc old instance after changes
+USE testDB
+GO
+EXEC sys.sp_cdc_disable_table @capture_instance = N'dbo_customers',@source_schema = N'dbo', @source_name = N'customers'
+GO;
+
+# demo changes for mysql
+INSERT INTO inventory.customers
+(first_name, last_name, middle_name, email)
+VALUES('', '','', '');
+
+ALTER table inventory.customers 
+add middle_name varchar(255);
+
 #get docker logs
 docker logs -f connect > connect-log.txt
+docker logs -f broker > broker-log.txt
+
 
 #internal docker Network
 gateway.docker.internal
@@ -19,3 +41,6 @@ host.docker.internal
 
 #remvoed from config file
 "transforms": "flatten",
+
+"transforms.flatten.delimiter": ".",
+"transforms.flatten.type": "org.apache.kafka.connect.transforms.Flatten$Value",
