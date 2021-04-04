@@ -1,3 +1,16 @@
+#sample database
+CREATE TABLE testDB.dbo.customers (
+	id int IDENTITY(1001,1) NOT NULL,
+	first_name varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	last_name varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	email varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	middle_name varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CONSTRAINT PK__customer__3213E83FC8C450D3 PRIMARY KEY (id),
+	CONSTRAINT UQ__customer__AB6E61641776D368 UNIQUE (email)
+) GO
+CREATE UNIQUE NONCLUSTERED INDEX UQ__customer__AB6E61641776D368 ON testDB.dbo.customers (email) GO;
+
+
 #Pull docker image
 docker pull mcr.microsoft.com/mssql/server:2017-latest
 
@@ -6,6 +19,7 @@ docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_AGENT_ENABLED=true' \
 -e 'MSSQL_PID=Standard' -e 'SA_PASSWORD=Password!' \
 -p 9999:1433 --name sqlserver_2 \
 -d mcr.microsoft.com/mssql/server:2017-latest
+
 
 #Log into container to get your SQL Server command prompt
 docker exec -it sqlserver_2 bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P Password!'
