@@ -1,0 +1,13 @@
+{
+    "name": "demo-jdbc-sink",
+    "config": {
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": "1",
+        "topics": "server1.dbo.customers",
+        "connection.url": "jdbc:sqlserver://host.docker.internal:9999;databaseName=targetDB;",
+        "auto.create": "true",
+        "name": "demo-jdbc-sink"
+    },
+    "tasks": [],
+    "type": null
+}

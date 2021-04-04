@@ -1,0 +1,21 @@
+#Pull docker image
+docker pull mcr.microsoft.com/mssql/server:2017-latest
+
+#Run docker container
+docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_AGENT_ENABLED=true' \
+-e 'MSSQL_PID=Standard' -e 'SA_PASSWORD=Password!' \
+-p 9999:1433 --name sqlserver_2 \
+-d mcr.microsoft.com/mssql/server:2017-latest
+
+#Log into container to get your SQL Server command prompt
+docker exec -it sqlserver_2 bash -c '/opt/mssql-tools/bin/sqlcmd -U sa -P Password!'
+
+#get docker logs
+docker logs -f connect > connect-log.txt
+
+#internal docker Network
+gateway.docker.internal
+host.docker.internal
+
+#remvoed from config file
+"transforms": "flatten",
